@@ -1,7 +1,11 @@
 import os
 import time
-
-
+from google_images_download import google_images_download   #importing the library
+  
+def download_images(label, key_words):
+  response = google_images_download.googleimagesdownload()   #class instantiation
+  argument = {"keywords": key_words, "limit":5, "image_directory": "images", "prefix": label} 
+  paths = response.download(argument)
 
 def split_fname_texts(line):
   obj = {}
@@ -20,15 +24,24 @@ def construt(filepath):
         name_list.append(splitted[0][:-1])
         string_list.append(splitted[1])
 
-  dic = Counter(name_list)
-  print(len(dic))
-  new_dic = dict((k, v) for k, v in dic.iteritems() if v > 3)
-  print(len(new_dic))
-
-
-with open('data/dm2000.txt', 'r') as myfile:
-  for line in myfile:
-    b = split_fname_texts(line)
-    print b['label']
-     
+def split_keywords(line):
+  obj = {}
+  if '_' in line:
+    split = line.split('_', 1)
+    obj['label'] = split[0]
+    obj['keywords'] = split[1] 
+  return obj
    
+
+#download_images('thyu66666__', 'herb drug')
+lista=[]
+with open('data/label_key.txt', 'r') as rf:
+  for line in rf:
+    lista.append(split_keywords(line)['label'])
+print len(lista)
+listb = set(lista)
+print len(listb)
+for i in range(len(lista)-1):
+  if lista[i] == lista[i+1]:
+    print lista[i]
+
