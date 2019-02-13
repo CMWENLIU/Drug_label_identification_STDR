@@ -47,7 +47,7 @@ def split_keywords(line):
     obj['keywords'] = split[1] 
   return obj
    
-def frequency(druglist, n):
+def frequency_distribution(druglist, n):
   label_list = []
   for item in druglist:
     label_list.append(item.label)
@@ -58,7 +58,14 @@ def frequency(druglist, n):
   fre_dis = collections.Counter(fre)
   df = pd.DataFrame({'distribution': fre_dis})
   df.to_csv('result.csv')
-'''
+
+def frequency(druglist, n):
+  label_list = []
+  for item in druglist:
+    label_list.append(item.label)
+  counter=collections.Counter(label_list)
+  result = []
+  count_list = []
   for item in counter:
     if counter[item] > n:
       result.append(item)
@@ -66,22 +73,22 @@ def frequency(druglist, n):
   df = pd.DataFrame({'count':count_list})
   df.to_csv('result.csv')
   return result
-'''
-def cal_acu_5(df):
-  a = np.zeros(shape=(df.shape[0], 4))
-  row_list = []
-  for index, row in df.iterrows():
-    re_list = []
-    #print "index is: " + str(index)
+
+def cal_top(df, n, m):
+  samples = df.sample(m)
+  for index, row in samples.iterrows():
+    t_label = row['label']
     obj = row['text']
+    list_label = []
+    list_score = []
     for i, r in df.iterrows():
-      re_list.append(fuzz.partial_ratio(obj, r['text']))
-    print sorted(re_list)[-5:-1]#top of the list
-    #print sorted(re_list)[0:4]#bottom of the list
-    row_list.append(sorted(re_list)[0:5])
-  a = row_list
-  return a
-    
+      list_label.append(r['label'])
+      list_score.append(fuzz.partial_ratio(obj, r['text']))
+    result_df = pd.DataFrame({'result_label': list_label, 'result_score': list_score})
+    result_df = result_df.sort_values(by=['result_score'], ascending=False).head(n)
+    print 'True label: ' + t_label 
+    print result_df
+
 drug_list=[]#list of drugs to store fileName,Text and lablel information
 with open('data/dm2000.txt', 'r') as rf:
   for line in rf:
@@ -90,14 +97,13 @@ with open('data/dm2000.txt', 'r') as rf:
 print len(drug_list)
 df = pd.DataFrame([vars(f) for f in drug_list])
 df.columns = ["label", "name", "text"]
-frequency(drug_list, 3)
-#final_list = frequency(drug_list, 3)#get the records with count more than 3
-#print len(final_list)
+#frequency(drug_list, 2)
+final_list = frequency(drug_list, 4)#get the records with count more than 3
+print len(final_list)
 #print df['label']
-#df = df[df['label'].isin(final_list)]
-#print len(df)
-#r_matrix = cal_acu_5(df)
-#print r_matrix
+df = df[df['label'].isin(final_list)]
+print len(df)
+cal_top(df, 8, 3)
 
 
 
