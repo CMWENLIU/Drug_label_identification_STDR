@@ -86,8 +86,18 @@ def cal_top(df, n, m):
       list_score.append(fuzz.partial_ratio(obj, r['text']))
     result_df = pd.DataFrame({'result_label': list_label, 'result_score': list_score})
     result_df = result_df.sort_values(by=['result_score'], ascending=False).head(n)
+    result_df1 = result_df.groupby('result_label')['result_score'].sum().reset_index(name ='total_score')
+    result_df1 = result_df1.sort_values(by=['total_score'], ascending=False)
+    scores = result_df1['total_score'].tolist()
+    norm = [round(float(i)/sum(scores), 2) for i in scores]
+    result_df1['probability'] = norm
     print 'True label: ' + t_label 
     print result_df
+    print result_df1
+def softmax(x):
+    """Compute softmax values for each sets of scores in x."""
+    e_x = np.exp(x - np.max(x))
+    return e_x / e_x.sum(axis=0) # only difference
 
 drug_list=[]#list of drugs to store fileName,Text and lablel information
 with open('data/dm2000.txt', 'r') as rf:
@@ -103,7 +113,7 @@ print len(final_list)
 #print df['label']
 df = df[df['label'].isin(final_list)]
 print len(df)
-cal_top(df, 8, 3)
+cal_top(df, 15, 2)
 
 
 
