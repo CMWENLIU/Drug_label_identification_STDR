@@ -47,19 +47,16 @@ def split_keywords(line):
     obj['keywords'] = split[1] 
   return obj
    
-def frequency_distribution(druglist, n):
+def frequency_distribution(druglist):
   label_list = []
   for item in druglist:
     label_list.append(item.label)
   counter=collections.Counter(label_list)
-  result = []
-  count_list = []
-  fre = counter.values()
-  fre_dis = collections.Counter(fre)
-  df = pd.DataFrame({'distribution': fre_dis})
-  df.to_csv('result.csv')
+  new_counter = collections.Counter(counter.values())
+  return new_counter
 
 def frequency(druglist, n):
+  print('Drugs containing more than ' + str(n) + ' images are selected')
   label_list = []
   for item in druglist:
     label_list.append(item.label)
@@ -71,7 +68,6 @@ def frequency(druglist, n):
       result.append(item)
       count_list.append(counter[item])
   df = pd.DataFrame({'count':count_list})
-  df.to_csv('result.csv')
   return result
 
 def cal_top(df, n, m):
@@ -79,28 +75,34 @@ def cal_top(df, n, m):
   for index, row in samples.iterrows():
     t_label = row['label']
     obj = row['text']
-    list_label = []
-    list_score = []
+    list_label, list_score, list_text,list_name = [], [], [], []
     for i, r in df.iterrows():
       list_label.append(r['label'])
-      list_score.append(fuzz.partial_ratio(obj, r['text']))
-    result_df = pd.DataFrame({'result_label': list_label, 'result_score': list_score})
+      list_name.append(r['name'])
+      list_text.append(r['text'])
+      list_score.append(fuzz.partial_ratio(obj, r['text']) + fuzz.ratio(obj, r['text']))
+    result_df = pd.DataFrame({'result_label': list_label, 'result_score': list_score, 'result_text': list_text, 'result_name': list_name})
     result_df = result_df.sort_values(by=['result_score'], ascending=False).head(n)
     result_df1 = result_df.groupby('result_label')['result_score'].sum().reset_index(name ='total_score')
     result_df1 = result_df1.sort_values(by=['total_score'], ascending=False)
     scores = result_df1['total_score'].tolist()
     norm = [round(float(i)/sum(scores), 2) for i in scores]
     result_df1['probability'] = norm
-    print 'True label: ' + t_label 
-    print result_df
-    print result_df1
+    '''
+    print ('True label of test drug: ' + t_label + '\n')
+    print ('Following are most similar texts from images:' + '\n')
+    print (result_df)
+    print ('Following are candidates from reference dataset:' + '\n')
+    print (result_df1)
+    '''
+  return result_df, result_df1, samples['name'].tolist(), samples['text'].tolist(), result_df['result_name'].tolist(), result_df['result_text'].tolist()
 def softmax(x):
     """Compute softmax values for each sets of scores in x."""
     e_x = np.exp(x - np.max(x))
     return e_x / e_x.sum(axis=0) # only difference
-
+'''
 drug_list=[]#list of drugs to store fileName,Text and lablel information
-with open('data/dm2000.txt', 'r') as rf:
+with open('data/ocr.txt', 'r') as rf:
   for line in rf:
     split_r = split_fname_texts(line)
     drug_list.append(Drug(split_r['name'], split_r['text'], split_r['label']))
@@ -114,7 +116,7 @@ print len(final_list)
 df = df[df['label'].isin(final_list)]
 print len(df)
 cal_top(df, 15, 2)
-
+'''
 
 
 
