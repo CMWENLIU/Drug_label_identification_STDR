@@ -10,6 +10,7 @@ import numpy as np
 import tensorflow as tf
 from tensorflow.python.platform import gfile
 
+os.environ['TF_CPP_MIN_LOG_LEVEL'] = '3'
 sys.path.append(os.getcwd())
 from lib.fast_rcnn.config import cfg, cfg_from_file
 from lib.fast_rcnn.test import _get_blobs
@@ -78,8 +79,8 @@ if __name__ == '__main__':
                glob.glob(os.path.join(cfg.DATA_DIR, 'demo', '*.jpg'))
 
     for im_name in im_names:
-        print('~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~')
-        print(('Demo for {:s}'.format(im_name)))
+        #print('~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~')
+        #print(('Demo for {:s}'.format(im_name)))
         img = cv2.imread(im_name)
         img, scale = resize_im(img, scale=TextLineCfg.SCALE, max_scale=TextLineCfg.MAX_SCALE)
         blobs, im_scales = _get_blobs(img, None)

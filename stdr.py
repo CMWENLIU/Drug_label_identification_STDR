@@ -55,17 +55,19 @@ for root, dirs, files in os.walk("data/demo/"):
         if file.endswith(tuple(ext)):
              all_files.append(os.path.join(root, file))
 print ('There are ' + str(len(all_files)) + ' images loaded')
-'''
-#next to save cropped images:
-for f in files_ori:
-    data_helpers.image_crop(f)
 
+#next to save cropped images:
+with open ('stdr.txt', 'w', encoding = 'utf-8') as writef:
+  for f in all_files:
+    s = data_helpers.recog_crop(f, langs, dic, tool)
+    writef.write(s + '\n')
+'''
 for root, dirs, files in os.walk("data/results/"):
     for f in files:
         if f.endswith(tuple(ext)):
              all_files.append(os.path.join(root, f))
 print ('There are ' + str(len(all_files)) + ' images loaded totally')
-'''
+
 #Following we recognize all images and write to database.
 print('Following we recognize all images and write all text to dataset.')
 i = 1
@@ -83,7 +85,7 @@ with open('ocr.txt', 'w', encoding='utf-8') as outf:
     outf.write(line + '\n')
     i += 1
 
-'''
+
 df = pd.DataFrame(all_res)
 #df.to_csv('result.csv', header=True, columns=['file', 'eng', 'fra', 'spa', 'chi_sim'], index=False)
 df.to_csv('ocr.csv', encoding='utf_8_sig', header=True, columns=['file', 'eng'], index=False)

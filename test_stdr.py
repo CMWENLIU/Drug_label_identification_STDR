@@ -1,29 +1,22 @@
 # import all tools and libraries
 import os
 import re
-#import cv2
 import glob
-#import spacy
 import time
 import datetime
 import data_helpers
 import process_image
-#from fuzzywuzzy import fuzz
-#from fuzzywuzzy import process
-#import PIL
-#from PIL import Image
 from random import randint
-#import matplotlib
-#import matplotlib.pyplot as plt
-#import pillowfight
-#import numpy as np
 import pandas as pd
 import sys
 import pyocr
 import pyocr.builders
 
-print('All tools are imported successfully')
+print ('text detection begin ......')
+exec(open("./ctpn/demo_pb.py").read())
 
+print ('text detection finish ...... Ready for recognition \n')
+#print('All tools are imported successfully')
 # Next is to prepare Tesseract OCR tools
 tools = pyocr.get_available_tools()
 if len(tools) == 0:
@@ -33,39 +26,40 @@ if len(tools) == 0:
 tool = tools[0]
 print("Will use tool '%s'" % (tool.get_name()))
 # Ex: Will use tool 'libtesseract'
-
 langs = tool.get_available_languages()
-print('There are 130 languages available!')
 print('We will use following languages:')
 print(', '.join(langs))
-
+print('\n')
 # build globle variables:
 all_res = [] 
 dic = {'file': '-'}
 for l in langs:
     dic[l] = '-'
-
 all_files = [] #create list for all images
 
 # Load all type of available image files
 ext = ['jpg', 'png','bmp', 'jpeg','JPG', 'PNG', 'BMP', 'JPEG']
-
 for root, dirs, files in os.walk("data/demo/"):
     for file in files:
         if file.endswith(tuple(ext)):
              all_files.append(os.path.join(root, file))
-print ('There are ' + str(len(all_files)) + ' images loaded')
-'''
-#next to save cropped images:
-for f in files_ori:
-    data_helpers.image_crop(f)
+# print ('There are ' + str(len(all_files)) + ' images loaded')
 
+#next to save cropped images:
+with open ('stdr.txt', 'w', encoding = 'utf-8') as writef:
+  for f in all_files:
+    s = data_helpers.recog_crop(f, langs, dic, tool) 
+    print('Cropped image is saved in data/result/' + os.path.basename(f))
+    print('Following is recognition result \n')
+    print(s)
+    writef.write(s)
+'''
 for root, dirs, files in os.walk("data/results/"):
     for f in files:
         if f.endswith(tuple(ext)):
              all_files.append(os.path.join(root, f))
 print ('There are ' + str(len(all_files)) + ' images loaded totally')
-'''
+
 #Following we recognize all images and write to database.
 print('Following we recognize all images and write all text to dataset.')
 i = 1
@@ -83,7 +77,7 @@ with open('ocr.txt', 'w', encoding='utf-8') as outf:
     outf.write(line + '\n')
     i += 1
 
-'''
+
 df = pd.DataFrame(all_res)
 #df.to_csv('result.csv', header=True, columns=['file', 'eng', 'fra', 'spa', 'chi_sim'], index=False)
 df.to_csv('ocr.csv', encoding='utf_8_sig', header=True, columns=['file', 'eng'], index=False)

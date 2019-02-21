@@ -38,7 +38,15 @@ def ext_txt(imgf, languages, record, tool):
     record['file'] = os.path.basename(imgf)
     for l in languages:
         txt = tool.image_to_string(Image.open(imgf), lang=l, builder=pyocr.builders.TextBuilder())
-        clean = process_raw(txt).encode('utf-8')
+        clean = process_raw(txt)
+        record[l] = clean if len(clean)!=0 else 'N/A'
+    return record
+
+def obj_ext_txt(imgf, img_obj, languages, record, tool):
+    record['file'] = os.path.basename(imgf)
+    for l in languages:
+        txt = tool.image_to_string(img_obj, lang=l, builder=pyocr.builders.TextBuilder())
+        clean = process_raw(txt)
         record[l] = clean if len(clean)!=0 else 'N/A'
     return record
 
@@ -48,7 +56,8 @@ def similarity(a, b):
     inter_len = len(list(set(tokens_a) & set(tokens_b)))
     ratio = inter_len/min(len(tokens_a), len(tokens_b))
     return ratio
-def image_crop(imagepath):
+
+def recog_crop(imagepath, languages, record, tool):
     imagename = os.path.basename(imagepath)
     crop_file = 'data/results/res_' + os.path.splitext(imagename)[0] + '.txt'
     crop_list = []
@@ -56,14 +65,17 @@ def image_crop(imagepath):
     with open(crop_file, 'r') as crops:
       for line in crops:
         crop = line.split(',')
-        crop = map(int, crop)
+        crop = list(map(int, crop))
         crop_list.append(crop)
     crop_list = sorted(crop_list, key=lambda x: x[3]-x[1])
     crop_list.reverse()
-    for idx, val in enumerate(crop_list[:9]):
-      if (val[2]-val[0]) > 3*(val[3]-val[1]):
+    res_text = ''
+    for idx, val in enumerate(crop_list):
+      if (val[2]-val[0]) > 2*(val[3]-val[1]):
         cropped_image = image_obj.crop(val)
-        cropped_image.save('data/results/' + os.path.splitext(imagename)[0] + '_cro_pped_' + str(idx+10) + '.jpg')
+        res = obj_ext_txt(imagepath, cropped_image, languages, record, tool)
+        res_text += res[languages[0]] + ' '
+    return res_text
 
 def compare_gt(result):
     df = pd.read_csv(result)
@@ -85,8 +97,8 @@ def compare_gt(result):
         s += (str(content[idx])+' ')
     rec_tess.append(s)
     for idx, val in enumerate(gt):
-      print fuzz.partial_ratio(str(tessract[idx]), str(val))
-      print fuzz.partial_ratio(str(rec_tess[idx]), str(val))
+      print (fuzz.partial_ratio(str(tessract[idx]), str(val)))
+      print (fuzz.partial_ratio(str(rec_tess[idx]), str(val)))
     odf = pd.DataFrame()
     odf['file'] = newfnames
     odf['ground_truth'] = gt 
