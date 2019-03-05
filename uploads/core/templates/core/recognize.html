@@ -1,0 +1,18 @@
+{% extends 'base.html' %}
+
+{% load static %}
+
+{% block content %}
+ <!-- <form method="post" enctype="multipart/form-data">
+    {% csrf_token %}
+    <input type="file" name="myfile">
+    <button type="submit">Upload</button>
+  </form>
+--> 
+    <a class="pure-button pure-button-active" href="{% url 'top' %}">Top candidates</a>
+    <a class="pure-button pure-button-active" href="{% url 'home' %}">Return to home</a>
+    <br>
+    <div class="column"> <img src="{{ uploaded_file_url }}" alt="IMG" style="width:100%"> </div>
+    <div class="column"> <img src="{{ result_file_url }}" alt="IMG" style="width:100%"> </div>
+    <div class="column"> Recognized result: <p>{{recognition}}</p> </div>    
+{% endblock %}

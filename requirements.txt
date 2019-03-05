@@ -11,3 +11,4 @@ pandas(latest version)
 pyocr(latest version)
 tesseract(latest version)
 fuzzywuzzy(latest version)
+Django==1.9.8

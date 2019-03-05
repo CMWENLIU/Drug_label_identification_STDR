@@ -1,0 +1,26 @@
+{% extends 'base.html' %}
+
+{% load static %}
+
+{% block content %}
+ <!-- <form method="post" enctype="multipart/form-data">
+    {% csrf_token %}
+    <input type="file" name="myfile">
+    <button type="submit">Upload</button>
+  </form>
+-->
+    <a class="pure-button pure-button-active" href="{% url 'home' %}">Return to home</a>
+    <br>
+    <div class="column">  <img src="{{ uploaded_file_url }}" alt="IMG" style="width:100%"> </div>
+    <div class="column">  <img src="{{ result_file_url }}" alt="IMG" style="width:100%"> </div>
+    <div class="column"> Recognized result:  <p>{{recognition}}</p> </div>
+
+    <div class="scoresdiv">
+      <table style="width:100%">
+        <tr> <th>Image</th> <th>Score</th> <th>Text</th> </tr>
+        {% for n, s, t in zipped %}
+           <tr> <th> <img class="distop" src="/media/{{ n }}"> </th> <th><p>{{s}}</p></th> <th ><p class="restext">{{t}}</p></th> </tr>
+       {% endfor %}
+    </table>
+    </div>   
+{% endblock %}

@@ -1,0 +1,85 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <link rel="stylesheet" href="https://unpkg.com/purecss@1.0.0/build/pure-min.css" integrity="sha384-nn4HPE8lTHyVtfCBi5yW9d20FjT8BJwUXyWZT9InLYax14RDjBj46LmSztkmNP9w" crossorigin="anonymous">
+    <meta charset="utf-8" name="viewport" content="width=device-width, initial-scale=1">
+    <title>Simple File Upload</title>
+    <style>
+
+table {
+  border-collapse: collapse;
+  width: 100%;
+}
+
+th, td {
+  line-height: 14px;
+  padding: 4px;
+  text-align: left;
+  border-bottom: 2px solid black;
+}
+    img {
+	width:auto;
+	height:auto;        
+	/*border-radius: 8px;
+        border:1px solid #021a40;*/
+        }
+button {
+    background-color: gray;
+  box-shadow: 0 2px 0 darkred;
+  color: white;
+  padding: 0.3em 1em;
+  position: relative;
+  text-decoration: none;
+}
+
+button, input:hover {
+  background-color: silver;
+}
+
+button, input:active {
+  box-shadow: none;
+  top: 2px;
+}
+
+* {
+  box-sizing: border-box;
+}
+.restext{
+font-size:1em;
+}
+.distop {
+width: auto;
+height: 200px;
+}
+.result{
+width: auto;
+height: auto;
+}
+.column {
+  float: left;
+  width: 400px;
+  height: 400px;
+  padding: 2px;
+  /*border:1px solid #021a40;*/
+}
+.scoresdiv{
+clear:both;
+}
+ /*Clearfix (clear floats) 
+.row::after {
+  content: "";
+  clear: both;
+  display: table;
+}*/
+    </style>
+  </head>
+
+  <body>
+    <!--<div class="row"> -->
+    <div>
+    <br>
+    {% block content %}
+    {% endblock %}
+    </div>
+  </body>
+</html>

@@ -1,0 +1,24 @@
+{% extends 'base.html' %}
+
+{% load static %}
+
+{% block content %}
+
+  <form method="post" enctype="multipart/form-data">
+    {% csrf_token %}
+    <input type="file" name="myfile">
+    <button class="pure-button pure-button-active" type="submit">TextDetection</button>
+    <a class="pure-button pure-button-active" href="{% url 'recognize' %}">Recognize</a>
+    <a class="pure-button pure-button-active" href="{% url 'home' %}">Return to home</a>
+  </form>
+
+  <br>
+  {% if uploaded_file_url %}
+    <!-- <p>File uploaded at: <a href="{{ uploaded_file_url }}">{{ uploaded_file_url }}</a></p> -->
+    
+    <div class="column"> <img src="{{ uploaded_file_url }}" alt="IMG" style="width:100%"> </div>
+    <div class="column"> <img src="{{ result_file_url }}" alt="IMG" style="width:100%"> </div>
+
+  {% endif %}
+
+{% endblock %}

@@ -70,17 +70,18 @@ def frequency(druglist, n):
   df = pd.DataFrame({'count':count_list})
   return result
 
-def cal_top(df, n, m):
-  samples = df.sample(m)
-  for index, row in samples.iterrows():
-    t_label = row['label']
-    obj = row['text']
+def cal_top(df, n, test_str):
+  #samples = df.sample(m)
+  #for index, row in samples.iterrows():
+    t_label = 'label'
+    obj = test_str
     list_label, list_score, list_text,list_name = [], [], [], []
     for i, r in df.iterrows():
       list_label.append(r['label'])
       list_name.append(r['name'])
       list_text.append(r['text'])
-      list_score.append(fuzz.partial_ratio(obj, r['text']) + fuzz.ratio(obj, r['text']))
+      list_score.append((fuzz.partial_ratio(obj, r['text']) + fuzz.ratio(obj, r['text']))/2)
+      #list_score.append(fuzz.partial_ratio(obj, r['text']))
     result_df = pd.DataFrame({'result_label': list_label, 'result_score': list_score, 'result_text': list_text, 'result_name': list_name})
     result_df = result_df.sort_values(by=['result_score'], ascending=False).head(n)
     result_df1 = result_df.groupby('result_label')['result_score'].sum().reset_index(name ='total_score')
@@ -95,7 +96,7 @@ def cal_top(df, n, m):
     print ('Following are candidates from reference dataset:' + '\n')
     print (result_df1)
     '''
-  return result_df, result_df1, samples['name'].tolist(), samples['text'].tolist(), result_df['result_name'].tolist(), result_df['result_text'].tolist()
+    return result_df, result_df1
 def softmax(x):
     """Compute softmax values for each sets of scores in x."""
     e_x = np.exp(x - np.max(x))

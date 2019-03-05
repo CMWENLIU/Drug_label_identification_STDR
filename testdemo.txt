@@ -1,0 +1,8 @@
+positive samples:
+Rosuvastatin calcium tablets 40 mg
+osmolex er amantadine extended-release tablets 129 mg
+Amitriptyline Hydrochloride tablets usp 10 mg rx only
+Quetiapine tablets usp 100mg rx only
+
+negative samples:
+dehydrated alcohol injection usp 3 ml

@@ -39,7 +39,7 @@ def ext_txt(imgf, languages, record, tool):
     for l in languages:
         txt = tool.image_to_string(Image.open(imgf), lang=l, builder=pyocr.builders.TextBuilder())
         clean = process_raw(txt)
-        record[l] = clean if len(clean)!=0 else 'N/A'
+        record[l] = clean if len(clean)!=0 else ' '
     return record
 
 def obj_ext_txt(imgf, img_obj, languages, record, tool):
@@ -47,7 +47,7 @@ def obj_ext_txt(imgf, img_obj, languages, record, tool):
     for l in languages:
         txt = tool.image_to_string(img_obj, lang=l, builder=pyocr.builders.TextBuilder())
         clean = process_raw(txt)
-        record[l] = clean if len(clean)!=0 else 'N/A'
+        record[l] = clean if len(clean)!=0 else ' '
     return record
 
 def similarity(a, b):
@@ -58,8 +58,9 @@ def similarity(a, b):
     return ratio
 
 def recog_crop(imagepath, languages, record, tool):
-    imagename = os.path.basename(imagepath)
-    crop_file = 'data/results/res_' + os.path.splitext(imagename)[0] + '.txt'
+    path, imagename = os.path.split(imagepath)
+    #imagename = os.path.basename(imagepath)
+    crop_file = os.path.join(path, 'res_' + os.path.splitext(imagename)[0] + '.txt')
     crop_list = []
     image_obj = Image.open(imagepath)
     with open(crop_file, 'r') as crops:
@@ -70,11 +71,13 @@ def recog_crop(imagepath, languages, record, tool):
     crop_list = sorted(crop_list, key=lambda x: x[3]-x[1])
     crop_list.reverse()
     res_text = ''
+    if len(crop_list) > 8:
+      crop_list = crop_list[:9]
     for idx, val in enumerate(crop_list):
-      if (val[2]-val[0]) > 2*(val[3]-val[1]):
-        cropped_image = image_obj.crop(val)
-        res = obj_ext_txt(imagepath, cropped_image, languages, record, tool)
-        res_text += res[languages[0]] + ' '
+      #if (val[2]-val[0]) > 2*(val[3]-val[1]):
+      cropped_image = image_obj.crop(val)
+      res = obj_ext_txt(imagepath, cropped_image, languages, record, tool)
+      res_text += res[languages[0]] + ' '
     return res_text
 
 def compare_gt(result):

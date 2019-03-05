@@ -1,0 +1,3 @@
+/home/bear/Drug_label_identification_STDR/media/image_XG1gNGW.jpg
+/media/image_XG1gNGW.jpg
+/media/res_image_XG1gNGW.jpg
