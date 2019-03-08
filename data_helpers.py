@@ -71,8 +71,9 @@ def recog_crop(imagepath, languages, record, tool):
     crop_list = sorted(crop_list, key=lambda x: x[3]-x[1])
     crop_list.reverse()
     res_text = ''
-    if len(crop_list) > 8:
-      crop_list = crop_list[:9]
+    #Following constrict the length of list
+    #if len(crop_list) > 8:
+    #  crop_list = crop_list[:9]
     for idx, val in enumerate(crop_list):
       #if (val[2]-val[0]) > 2*(val[3]-val[1]):
       cropped_image = image_obj.crop(val)

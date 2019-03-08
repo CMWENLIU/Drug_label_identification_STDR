@@ -27,8 +27,11 @@ def resize_im(im, scale, max_scale=None):
 
 
 def draw_boxes(img, image_name, boxes, scale):
-    base_name = image_name.split('/')[-1]
-    with open('media/' + 'res_' + os.path.splitext(base_name)[0] + '.txt', 'w') as f:
+    #base_name = image_name.split('/')[-1]
+    path_name, file_name = os.path.split(image_name)
+    base_name = file_name
+    text_file = 'res_' + os.path.splitext(base_name)[0] + '.txt'
+    with open(os.path.join(path_name, text_file), 'w') as f:
         for box in boxes:
             if np.linalg.norm(box[0] - box[1]) < 5 or np.linalg.norm(box[3] - box[0]) < 5:
                 continue
@@ -50,7 +53,7 @@ def draw_boxes(img, image_name, boxes, scale):
             f.write(line)
 
     img = cv2.resize(img, None, None, fx=1.0 / scale, fy=1.0 / scale, interpolation=cv2.INTER_LINEAR)
-    cv2.imwrite(os.path.join("media", 'res_' + base_name), img)
+    cv2.imwrite(os.path.join(path_name, 'res_' + base_name), img)
     #return os.path.join("data/results", base_name)
 
 

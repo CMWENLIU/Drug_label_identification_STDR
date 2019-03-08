@@ -17,10 +17,12 @@ from random import randint
 #import matplotlib.pyplot as plt
 #import pillowfight
 #import numpy as np
+import time
 import pandas as pd
 import sys
 import pyocr
 import pyocr.builders
+import cropimage
 
 print('All tools are imported successfully')
 
@@ -50,18 +52,30 @@ all_files = [] #create list for all images
 # Load all type of available image files
 ext = ['jpg', 'png','bmp', 'jpeg','JPG', 'PNG', 'BMP', 'JPEG']
 
-for root, dirs, files in os.walk("data/demo/"):
+for root, dirs, files in os.walk("data/images/"):
     for file in files:
         if file.endswith(tuple(ext)):
              all_files.append(os.path.join(root, file))
 print ('There are ' + str(len(all_files)) + ' images loaded')
 
+#next to crop images:
+start = time.time()
+with open ('stdr.txt', 'w', encoding = 'utf-8') as writef:
+  for f in all_files:
+    cropimage.detection(f)
+    s = data_helpers.clean_str(data_helpers.recog_crop(f, langs, dic, tool))
+    writef.write(s + '\n')
+    print('file:  ' + f[-15:] + ' finished!' + 'Running time: ' + str(time.time()-start))
+
+
+
+'''
 #next to save cropped images:
 with open ('stdr.txt', 'w', encoding = 'utf-8') as writef:
   for f in all_files:
     s = data_helpers.recog_crop(f, langs, dic, tool)
     writef.write(s + '\n')
-'''
+
 for root, dirs, files in os.walk("data/results/"):
     for f in files:
         if f.endswith(tuple(ext)):
