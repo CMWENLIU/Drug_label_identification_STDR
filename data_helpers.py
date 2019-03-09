@@ -34,21 +34,17 @@ def process_raw(string):
     #return string.strip().lower()
     return string
 
-def ext_txt(imgf, languages, record, tool):
+def ext_txt(imgf, language, record, tool):
     record['file'] = os.path.basename(imgf)
-    for l in languages:
-        txt = tool.image_to_string(Image.open(imgf), lang=l, builder=pyocr.builders.TextBuilder())
-        clean = process_raw(txt)
-        record[l] = clean if len(clean)!=0 else ' '
-    return record
+    txt = tool.image_to_string(Image.open(imgf), lang=language, builder=pyocr.builders.TextBuilder())
+    clean = process_raw(txt)
+    return clean
 
-def obj_ext_txt(imgf, img_obj, languages, record, tool):
+def obj_ext_txt(imgf, img_obj, language, record, tool):
     record['file'] = os.path.basename(imgf)
-    for l in languages:
-        txt = tool.image_to_string(img_obj, lang=l, builder=pyocr.builders.TextBuilder())
-        clean = process_raw(txt)
-        record[l] = clean if len(clean)!=0 else ' '
-    return record
+    txt = tool.image_to_string(img_obj, lang=language, builder=pyocr.builders.TextBuilder())
+    clean = process_raw(txt)
+    return clean
 
 def similarity(a, b):
     tokens_a = a.split()
@@ -57,7 +53,7 @@ def similarity(a, b):
     ratio = inter_len/min(len(tokens_a), len(tokens_b))
     return ratio
 
-def recog_crop(imagepath, languages, record, tool):
+def recog_crop(imagepath, language, record, tool):
     path, imagename = os.path.split(imagepath)
     #imagename = os.path.basename(imagepath)
     crop_file = os.path.join(path, 'res_' + os.path.splitext(imagename)[0] + '.txt')
@@ -77,8 +73,8 @@ def recog_crop(imagepath, languages, record, tool):
     for idx, val in enumerate(crop_list):
       #if (val[2]-val[0]) > 2*(val[3]-val[1]):
       cropped_image = image_obj.crop(val)
-      res = obj_ext_txt(imagepath, cropped_image, languages, record, tool)
-      res_text += res[languages[0]] + ' '
+      res = obj_ext_txt(imagepath, cropped_image, language, record, tool)
+      res_text += res + ' '
     return res_text
 
 def compare_gt(result):

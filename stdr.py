@@ -37,10 +37,9 @@ print("Will use tool '%s'" % (tool.get_name()))
 # Ex: Will use tool 'libtesseract'
 
 langs = tool.get_available_languages()
-print('There are 130 languages available!')
-print('We will use following languages:')
+print('Following languages are available:')
 print(', '.join(langs))
-
+language = 'eng'
 # build globle variables:
 all_res = [] 
 dic = {'file': '-'}
@@ -63,7 +62,7 @@ start = time.time()
 with open ('stdr.txt', 'w', encoding = 'utf-8') as writef:
   for f in all_files:
     cropimage.detection(f)
-    s = data_helpers.clean_str(data_helpers.recog_crop(f, langs, dic, tool))
+    s = data_helpers.clean_str(data_helpers.recog_crop(f, language, dic, tool))
     writef.write(s + '\n')
     print('file:  ' + f[-15:] + ' finished!' + 'Running time: ' + str(time.time()-start))
 
