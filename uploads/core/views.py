@@ -67,7 +67,7 @@ def recognize(request):
     langs = tool.get_available_languages()
     #print('We will use following languages:')
     #print(', '.join(langs))
-
+    language = 'eng'
     dic = {'file': '-'}
     for l in langs:
         dic[l] = '-'
@@ -75,7 +75,7 @@ def recognize(request):
         imagefile = rpass.readline().rstrip('\n')
         uploaded_file_url = rpass.readline().rstrip('\n')
         result_file_url = rpass.readline().rstrip('\n')
-        recog_res = data_helpers.recog_crop(imagefile, langs, dic, tool)
+        recog_res = data_helpers.recog_crop(imagefile, language, dic, tool)
         with open('single_rec.txt', 'w') as wres:
           wres.write(recog_res)
         return render(request, 'core/recognize.html', {'recognition':recog_res,

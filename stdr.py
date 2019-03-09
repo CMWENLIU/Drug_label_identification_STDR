@@ -65,7 +65,9 @@ with open ('stdr.txt', 'w', encoding = 'utf-8') as writef:
     s = data_helpers.clean_str(data_helpers.recog_crop(f, language, dic, tool))
     writef.write(s + '\n')
     print('file:  ' + f[-15:] + ' finished!' + 'Running time: ' + str(time.time()-start))
-
+  
+with open ('running_time.txt', 'w', encoding = 'utf-8') as wf:
+  wf.write('Total Running time: ' + str(time.time()-start))
 
 
 '''
