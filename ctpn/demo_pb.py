@@ -5,6 +5,7 @@ import os
 import shutil
 import sys
 
+import time
 import cv2
 import numpy as np
 import tensorflow as tf
@@ -77,10 +78,14 @@ if __name__ == '__main__':
 
     im_names = glob.glob(os.path.join(cfg.DATA_DIR, 'demo', '*.png')) + \
                glob.glob(os.path.join(cfg.DATA_DIR, 'demo', '*.jpg'))
-
+    #max_time = 0
+    #min_time = 4000
+    #sum_time = 0
+    #count = 0
     for im_name in im_names:
-        #print('~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~')
-        #print(('Demo for {:s}'.format(im_name)))
+        print('~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~')
+        print(('Demo for {:s}'.format(im_name)))
+        start = time.time()
         img = cv2.imread(im_name)
         img, scale = resize_im(img, scale=TextLineCfg.SCALE, max_scale=TextLineCfg.MAX_SCALE)
         blobs, im_scales = _get_blobs(img, None)
@@ -97,3 +102,15 @@ if __name__ == '__main__':
         textdetector = TextDetector()
         boxes = textdetector.detect(boxes, scores[:, np.newaxis], img.shape[:2])
         draw_boxes(img, im_name, boxes, scale)
+        '''
+        count += 1
+        end = time.time()
+        time_perimg = end - start
+        if time_perimg > max_time:
+          max_time = time_perimg
+        if time_perimg < min_time:
+          min_time = time_perimg
+        sum_time += time_perimg
+        ave_time = sum_time/count       
+        print("ave: " + str(ave_time) + "     max: " + str(max_time) + "    min:" + str(min_time))
+        '''

@@ -36,13 +36,21 @@ def process_raw(string):
 
 def ext_txt(imgf, language, record, tool):
     record['file'] = os.path.basename(imgf)
-    txt = tool.image_to_string(Image.open(imgf), lang=language, builder=pyocr.builders.TextBuilder())
+    txt = ' '
+    try:
+      txt = tool.image_to_string(Image.open(imgf), lang=language, builder=pyocr.builders.TextBuilder())
+    except: 
+      print("An exception occurred")    
     clean = process_raw(txt)
     return clean
 
 def obj_ext_txt(imgf, img_obj, language, record, tool):
     record['file'] = os.path.basename(imgf)
-    txt = tool.image_to_string(img_obj, lang=language, builder=pyocr.builders.TextBuilder())
+    txt = ' '
+    try:
+      txt = tool.image_to_string(img_obj, lang=language, builder=pyocr.builders.TextBuilder())
+    except:
+      print("An exception occurred") 
     clean = process_raw(txt)
     return clean
 
@@ -68,8 +76,8 @@ def recog_crop(imagepath, language, record, tool):
     crop_list.reverse()
     res_text = ''
     #Following constrict the length of list
-    #if len(crop_list) > 8:
-    #  crop_list = crop_list[:9]
+    #if len(crop_list) > 4:
+    #  crop_list = crop_list[:5]
     for idx, val in enumerate(crop_list):
       #if (val[2]-val[0]) > 2*(val[3]-val[1]):
       cropped_image = image_obj.crop(val)

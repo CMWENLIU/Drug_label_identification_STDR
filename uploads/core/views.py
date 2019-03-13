@@ -24,7 +24,7 @@ def top(request):
             self.text = text
             self.label = label  
     drug_list, test_string=[], ''#list of drugs to store fileName,Text and lablel information
-    with open('data/morethan4.txt', 'r') as rf:
+    with open('data/ocr.txt', 'r') as rf:
       for line in rf:
         split_r = pro.split_fname_texts(line)
         drug_list.append(Drug(split_r['name'], split_r['text'], split_r['label']))
@@ -75,7 +75,9 @@ def recognize(request):
         imagefile = rpass.readline().rstrip('\n')
         uploaded_file_url = rpass.readline().rstrip('\n')
         result_file_url = rpass.readline().rstrip('\n')
-        recog_res = data_helpers.recog_crop(imagefile, language, dic, tool)
+        #recog_res = data_helpers.recog_crop(imagefile, language, dic, tool)
+        recog_res = data_helpers.ext_txt(imagefile, language, dic, tool)
+        recog_res = data_helpers.clean_str(recog_res)
         with open('single_rec.txt', 'w') as wres:
           wres.write(recog_res)
         return render(request, 'core/recognize.html', {'recognition':recog_res,

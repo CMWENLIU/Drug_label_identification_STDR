@@ -58,16 +58,27 @@ for root, dirs, files in os.walk("data/images/"):
 print ('There are ' + str(len(all_files)) + ' images loaded')
 
 #next to crop images:
-start = time.time()
+min_time, max_time, sum_time, count = 100000, 0, 0, 0
 with open ('stdr.txt', 'w', encoding = 'utf-8') as writef:
   for f in all_files:
-    cropimage.detection(f)
+    start = time.time()
     s = data_helpers.clean_str(data_helpers.recog_crop(f, language, dic, tool))
-    writef.write(s + '\n')
-    print('file:  ' + f[-15:] + ' finished!' + 'Running time: ' + str(time.time()-start))
+    path, name = os.path.split(f)
+    writef.write(name + ' ' + s + '\n')
+    count += 1
+    end = time.time()
+    per_time = end - start
+    sum_time += per_time
+    ave_time = sum_time/count
+    if max_time < per_time:
+      max_time = per_time
+    if min_time > per_time:
+      min_time = per_time
+    print('min: ' + str(min_time) + '  max: ' + str(max_time) + '  ave: ' + str(ave_time))
+    
   
 with open ('running_time.txt', 'w', encoding = 'utf-8') as wf:
-  wf.write('Total Running time: ' + str(time.time()-start))
+  wf.write('min: ' + str(min_time) + '  max: ' + str(max_time) + '  ave: ' + str(ave_time))
 
 
 '''
